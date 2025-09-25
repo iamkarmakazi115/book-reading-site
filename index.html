@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Literary Sanctum - Elegant Book Reading</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important; /* Force no rounded edges */
+        }
+
+        :root {
+            --gold: #d4af37;
+            --dark-gold: #b8941f;
+            --cream: #faf8f3;
+            --dark-bg: rgba(20, 20, 20, 0.9);
+            --light-bg: rgba(250, 248, 243, 0.95);
+        }
+
+        body {
+            font-family: 'Garamond', 'Georgia', serif;
+            overflow-x: hidden;
+            color: var(--cream);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Video Background */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        #video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Filigree Corner Decorations */
+        .filigree-corner {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .filigree-corner::before,
+        .filigree-corner::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
+            animation: gleam 3s ease-in-out infinite;
+        }
+
+        .filigree-corner.top-left {
+            top: 0;
+            left: 0;
+        }
+
+        .filigree-corner.top-left::before {
+            width: 100px;
+            height: 3px;
+            top: 20px;
+            left: 0;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.top-left::after {
+            width: 3px;
+            height: 100px;
+            top: 0;
+            left: 20px;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.top-right {
+            top: 0;
+            right: 0;
+        }
+
+        .filigree-corner.top-right::before {
+            width: 100px;
+            height: 3px;
+            top: 20px;
+            right: 0;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.top-right::after {
+            width: 3px;
+            height: 100px;
+            top: 0;
+            right: 20px;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.bottom-left {
+            bottom: 0;
+            left: 0;
+        }
+
+        .filigree-corner.bottom-left::before {
+            width: 100px;
+            height: 3px;
+            bottom: 20px;
+            left: 0;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.bottom-left::after {
+            width: 3px;
+            height: 100px;
+            bottom: 0;
+            left: 20px;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.bottom-right {
+            bottom: 0;
+            right: 0;
+        }
+
+        .filigree-corner.bottom-right::before {
+            width: 100px;
+            height: 3px;
+            bottom: 20px;
+            right: 0;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .filigree-corner.bottom-right::after {
+            width: 3px;
+            height: 100px;
+            bottom: 0;
+            right: 20px;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        /* Ornamental Filigree Pattern */
+        .filigree-pattern {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: 
+                linear-gradient(45deg, transparent 30%, var(--gold) 30%, var(--gold) 32%, transparent 32%),
+                linear-gradient(-45deg, transparent 30%, var(--gold) 30%, var(--gold) 32%, transparent 32%),
+                linear-gradient(90deg, transparent 45%, var(--gold) 45%, var(--gold) 55%, transparent 55%),
+                linear-gradient(0deg, transparent 45%, var(--gold) 45%, var(--gold) 55%, transparent 55%);
+            animation: gleam 3s ease-in-out infinite;
+        }
+
+        .filigree-corner.top-left .filigree-pattern {
+            top: 10px;
+            left: 10px;
+        }
+
+        .filigree-corner.top-right .filigree-pattern {
+            top: 10px;
+            right: 10px;
+        }
+
+        .filigree-corner.bottom-left .filigree-pattern {
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .filigree-corner.bottom-right .filigree-pattern {
+            bottom: 10px;
+            right: 10px;
+        }
+
+        @keyframes gleam {
+            0%, 100% {
+                opacity: 0.8;
+                filter: brightness(1);
+            }
+            50% {
+                opacity: 1;
+                filter: brightness(1.3) drop-shadow(0 0 20px var(--gold));
+            }
+        }
+
+        /* Header with Elegant Title */
+        header {
+            background: var(--dark-bg);
+            padding: 30px 0;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid var(--gold);
+            backdrop-filter: blur(10px);
+        }
+
+        .site-title {
+            font-size: 3.5rem;
+            font-weight: normal;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, var(--gold), var(--cream), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            animation: titleGleam 4s ease-in-out infinite;
+        }
+
+        @keyframes titleGleam {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.2) drop-shadow(0 0 25px var(--gold));
+            }
+        }
+
+        /* Filigree decorations around title */
+        .title-filigree {
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .title-filigree.left {
+            left: 10%;
+        }
+
+        .title-filigree.right {
+            right: 10%;
+        }
+
+        .title-filigree::before,
+        .title-filigree::after {
+            content: '◆';
+            position: absolute;
+            color: var(--gold);
+            font-size: 20px;
+            top: -10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .title-filigree.left::before {
+            left: 0;
+        }
+
+        .title-filigree.left::after {
+            right: 0;
+        }
+
+        .title-filigree.right::before {
+            left: 0;
+        }
+
+        .title-filigree.right::after {
+            right: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(30, 30, 30, 0.95);
+            border-top: 1px solid var(--gold);
+            border-bottom: 1px solid var(--gold);
+            padding: 0;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+        }
+
+        .nav-button {
+            background: linear-gradient(180deg, rgba(30, 30, 30, 0.9), rgba(20, 20, 20, 0.9));
+            color: var(--cream);
+            border: 2px solid var(--gold);
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-family: 'Garamond', serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0 -1px;
+        }
+
+        .nav-button:hover {
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+            color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-button.active {
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.2));
+            color: var(--gold);
+            border-color: var(--cream);
+        }
+
+        /* Filigree decoration on nav buttons */
+        .nav-button::before,
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--gold);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button::before {
+            top: 5px;
+            left: 5px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .nav-button::after {
+            bottom: 5px;
+            right: 5px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .nav-button:hover::before,
+        .nav-button:hover::after {
+            opacity: 1;
+            animation: gleam 2s ease-in-out infinite;
+        }
+
+        /* Sub-navigation */
+        .sub-nav {
+            background: rgba(40, 40, 40, 0.95);
+            padding: 10px;
+            display: none;
+            justify-content: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--gold);
+            backdrop-filter: blur(10px);
+        }
+
+        .sub-nav.active {
+            display: flex;
+        }
+
+        .sub-nav-button {
+            background: none;
+            color: var(--cream);
+            border: 1px solid var(--gold);
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Garamond', serif;
+            letter-spacing: 1px;
+        }
+
+        .sub-nav-button:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .sub-nav-button.active {
+            background: rgba(212, 175, 55, 0.3);
+            color: var(--gold);
+        }
+
+        /* Content Area */
+        .content {
+            padding: 40px;
+            min-height: calc(100vh - 300px);
+            background: rgba(20, 20, 20, 0.85);
+            margin: 20px;
+            border: 2px solid var(--gold);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .page-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-content h2 {
+            color: var(--gold);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .page-content p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: var(--cream);
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        /* Book Display Grid */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
+            padding: 30px 0;
+        }
+
+        .book-card {
+            background: rgba(30, 30, 30, 0.9);
+            border: 2px solid var(--gold);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            border-color: var(--cream);
+        }
+
+        .book-card::before,
+        .book-card::after {
+            content: '❦';
+            position: absolute;
+            color: var(--gold);
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .book-card::before {
+            top: 10px;
+            left: 10px;
+        }
+
+        .book-card::after {
+            bottom: 10px;
+            right: 10px;
+        }
+
+        .book-card:hover::before,
+        .book-card:hover::after {
+            opacity: 1;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .book-cover {
+            width: 150px;
+            height: 220px;
+            background: linear-gradient(135deg, #2c1810, #8b4513);
+            margin: 0 auto 15px;
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .book-title {
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .book-author {
+            color: var(--cream);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Reading Interface */
+        .reading-interface {
+            background: rgba(250, 248, 243, 0.95);
+            color: #333;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 3px solid var(--gold);
+            position: relative;
+        }
+
+        .reading-interface h3 {
+            color: #2c1810;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .reading-text {
+            line-height: 2;
+            font-size: 1.1rem;
+            text-align: justify;
+            column-count: 2;
+            column-gap: 40px;
+            column-rule: 1px solid var(--gold);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed var(--gold);
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--cream);
+        }
+
+        .upload-button {
+            background: linear-gradient(180deg, var(--gold), var(--dark-gold));
+            color: #2c1810;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .upload-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid var(--gold);
+            color: var(--cream);
+            position: relative;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border: 1px solid var(--gold);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border: 1px solid #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div id="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="FlowingBlackLiquid.mp4" type="video/mp4">
+            <!-- Add your MP4 video file here -->
+        </video>
+    </div>
+
+    <!-- Page Corner Decorations -->
+    <div class="filigree-corner top-left">
+        <div class="filigree-pattern"></div>
+    </div>
+    <div class="filigree-corner top-right">
+        <div class="filigree-pattern"></div>
+    </div>
+    <div class="filigree-corner bottom-left">
+        <div class="filigree-pattern"></div>
+    </div>
+    <div class="filigree-corner bottom-right">
+        <div class="filigree-pattern"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="title-filigree left"></div>
+        <h1 class="site-title">The Literary Sanctum</h1>
+        <div class="title-filigree right"></div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav>
+        <div class="nav-container">
+            <button class="nav-button active" onclick="showSection('library')">Library</button>
+            <button class="nav-button" onclick="showSection('collections')">Collections</button>
+            <button class="nav-button" onclick="showSection('reading-room')">Reading Room</button>
+            <button class="nav-button" onclick="showSection('authors')">Authors</button>
+            <button class="nav-button" onclick="showSection('upload')">Upload</button>
+        </div>
+    </nav>
+
+    <!-- Sub Navigation -->
+    <div class="sub-nav active" id="library-subnav">
+        <button class="sub-nav-button active" onclick="showSubPage('library', 'classics')">Classics</button>
+        <button class="sub-nav-button" onclick="showSubPage('library', 'fiction')">Fiction</button>
+        <button class="sub-nav-button" onclick="showSubPage('library', 'non-fiction')">Non-Fiction</button>
+        <button class="sub-nav-button" onclick="showSubPage('library', 'poetry')">Poetry</button>
+        <button class="sub-nav-button" onclick="showSubPage('library', 'recent')">Recent Additions</button>
+    </div>
+
+    <div class="sub-nav" id="collections-subnav">
+        <button class="sub-nav-button" onclick="showSubPage('collections', 'featured')">Featured</button>
+        <button class="sub-nav-button" onclick="showSubPage('collections', 'bestsellers')">Bestsellers</button>
+        <button class="sub-nav-button" onclick="showSubPage('collections', 'awards')">Award Winners</button>
+        <button class="sub-nav-button" onclick="showSubPage('collections', 'rare')">Rare Books</button>
+        <button class="sub-nav-button" onclick="showSubPage('collections', 'themed')">Themed Sets</button>
+    </div>
+
+    <div class="sub-nav" id="reading-room-subnav">
+        <button class="sub-nav-button" onclick="showSubPage('reading-room', 'current')">Current Book</button>
+        <button class="sub-nav-button" onclick="showSubPage('reading-room', 'bookmarks')">Bookmarks</button>
+        <button class="sub-nav-button" onclick="showSubPage('reading-room', 'notes')">Notes</button>
+        <button class="sub-nav-button" onclick="showSubPage('reading-room', 'history')">Reading History</button>
+        <button class="sub-nav-button" onclick="showSubPage('reading-room', 'settings')">Settings</button>
+    </div>
+
+    <div class="sub-nav" id="authors-subnav">
+        <button class="sub-nav-button" onclick="showSubPage('authors', 'featured-authors')">Featured</button>
+        <button class="sub-nav-button" onclick="showSubPage('authors', 'biographies')">Biographies</button>
+        <button class="sub-nav-button" onclick="showSubPage('authors', 'interviews')">Interviews</button>
+        <button class="sub-nav-button" onclick="showSubPage('authors', 'contemporary')">Contemporary</button>
+        <button class="sub-nav-button" onclick="showSubPage('authors', 'classical')">Classical</button>
+    </div>
+
+    <div class="sub-nav" id="upload-subnav">
+        <button class="sub-nav-button" onclick="showSubPage('upload', 'new-upload')">New Upload</button>
+        <button class="sub-nav-button" onclick="showSubPage('upload', 'my-uploads')">My Uploads</button>
+        <button class="sub-nav-button" onclick="showSubPage('upload', 'processing')">Processing</button>
+        <button class="sub-nav-button" onclick="showSubPage('upload', 'guidelines')">Guidelines</button>
+        <button class="sub-nav-button" onclick="showSubPage('upload', 'formats')">Supported Formats</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content">
+        <!-- Library Section Pages -->
+        <div class="page-content active" id="library-classics">
+            <h2>Classic Literature</h2>
+            <div class="book-grid">
+                <div class="book-card">
+                    <div class="book-cover">Pride and Prejudice</div>
+                    <div class="book-title">Pride and Prejudice</div>
+                    <div class="book-author">Jane Austen</div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">War and Peace</div>
+                    <div class="book-title">War and Peace</div>
+                    <div class="book-author">Leo Tolstoy</div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">The Great Gatsby</div>
+                    <div class="book-title">The Great Gatsby</div>
+                    <div class="book-author">F. Scott Fitzgerald</div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">1984</div>
+                    <div class="book-title">1984</div>
+                    <div class="book-author">George Orwell</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content" id="library-fiction">
+            <h2>Fiction Collection</h2>
+            <p>Explore our vast collection of fiction works, from contemporary novels to timeless tales of adventure and romance.</p>
+            <div class="book-grid">
+                <div class="book-card">
+                    <div class="book-cover">Modern Fiction</div>
+                    <div class="book-title">The Shadow's Edge</div>
+                    <div class="book-author">Contemporary Author</div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">Mystery Novel</div>
+                    <div class="book-title">Midnight Secrets</div>
+                    <div class="book-author">Mystery Writer</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content" id="library-non-fiction">
+            <h2>Non-Fiction Works</h2>
+            <p>Discover knowledge and insights from our comprehensive non-fiction collection.</p>
+        </div>
+
+        <div class="page-content" id="library-poetry">
+            <h2>Poetry Collection</h2>
+            <p>Immerse yourself in the beauty of verse and rhythm.</p>
+        </div>
+
+        <div class="page-content" id="library-recent">
+            <h2>Recent Additions</h2>
+            <p>Browse the latest additions to our digital library.</p>
+        </div>
+
+        <!-- Collections Section Pages -->
+        <div class="page-content" id="collections-featured">
+            <h2>Featured Collections</h2>
+            <p>Curated selections of exceptional literary works.</p>
+        </div>
+
+        <div class="page-content" id="collections-bestsellers">
+            <h2>Bestsellers</h2>
+            <p>The most popular and widely read books in our collection.</p>
+        </div>
+
+        <div class="page-content" id="collections-awards">
+            <h2>Award Winners</h2>
+            <p>Prestigious literary award recipients and nominees.</p>
+        </div>
+
+        <div class="page-content" id="collections-rare">
+            <h2>Rare Books</h2>
+            <p>Exclusive and hard-to-find literary treasures.</p>
+        </div>
+
+        <div class="page-content" id="collections-themed">
+            <h2>Themed Sets</h2>
+            <p>Books organized by themes and special interests.</p>
+        </div>
+
+        <!-- Reading Room Section Pages -->
+        <div class="page-content" id="reading-room-current">
+            <h2>Current Reading</h2>
+            <div class="reading-interface">
+                <h3>Chapter One</h3>
+                <div class="reading-text">
+                    <p>It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair...</p>
+                    <p>Continue your reading journey with our elegant interface designed for comfortable, extended reading sessions. Adjust settings to your preference and immerse yourself in the world of literature.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content" id="reading-room-bookmarks">
+            <h2>Your Bookmarks</h2>
+            <p>Access your saved reading positions across all books.</p>
+        </div>
+
+        <div class="page-content" id="reading-room-notes">
+            <h2>Reading Notes</h2>
+            <p>Your personal annotations and thoughts on various texts.</p>
+        </div>
+
+        <div class="page-content" id="reading-room-history">
+            <h2>Reading History</h2>
+            <p>Track your literary journey through time.</p>
+        </div>
+
+        <div class="page-content" id="reading-room-settings">
+            <h2>Reading Settings</h2>
+            <p>Customize your reading experience.</p>
+        </div>
+
+        <!-- Authors Section Pages -->
+        <div class="page-content" id="authors-featured-authors">
+            <h2>Featured Authors</h2>
+            <p>Discover the minds behind the masterpieces.</p>
+        </div>
+
+        <div class="page-content" id="authors-biographies">
+            <h2>Author Biographies</h2>
+            <p>In-depth profiles of literary figures.</p>
+        </div>
+
+        <div class="page-content" id="authors-interviews">
+            <h2>Author Interviews</h2>
+            <p>Exclusive conversations with contemporary writers.</p>
+        </div>
+
+        <div class="page-content" id="authors-contemporary">
+            <h2>Contemporary Authors</h2>
+            <p>Modern voices shaping literature today.</p>
+        </div>
+
+        <div class="page-content" id="authors-classical">
+            <h2>Classical Authors</h2>
+            <p>The timeless masters of literature.</p>
+        </div>
+
+        <!-- Upload Section Pages -->
+        <div class="page-content" id="upload-new-upload">
+            <h2>Upload Your Book</h2>
+            <div class="upload-area">
+                <p>Drag and drop your book file here or click to browse</p>
+                <button class="upload-button">Select File</button>
+                <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">Supported formats: PDF, EPUB, MOBI, TXT</p>
+            </div>
+        </div>
+
+        <div class="page-content" id="upload-my-uploads">
+            <h2>My Uploads</h2>
+            <p>Manage your personal book collection.</p>
+        </div>
+
+        <div class="page-content" id="upload-processing">
+            <h2>Processing Queue</h2>
+            <p>Books currently being processed for the library.</p>
+        </div>
+
+        <div class="page-content" id="upload-guidelines">
+            <h2>Upload Guidelines</h2>
+            <p>Important information about uploading content to our library.</p>
+        </div>
+
+        <div class="page-content" id="upload-formats">
+            <h2>Supported Formats</h2>
+            <p>Complete list of file formats accepted by our system.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 The Literary Sanctum - Where Words Come Alive</p>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        function showSection(sectionName) {
+            // Hide all sub-navs
+            document.querySelectorAll('.sub-nav').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // Show selected sub-nav
+            const subNav = document.getElementById(sectionName + '-subnav');
+            if (subNav) {
+                subNav.classList.add('active');
+            }
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Hide all content
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show first sub-page of the section
+            const firstSubButton = subNav?.querySelector('.sub-nav-button');
+            if (firstSubButton) {
+                firstSubButton.click();
+            }
+        }
+        
+        function showSubPage(section, subpage) {
+            // Hide all content
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected content
+            const contentId = section + '-' + subpage;
+            const content = document.getElementById(contentId);
+            if (content) {
+                content.classList.add('active');
+            }
+            
+            // Update active sub-nav button
+            const subNav = document.getElementById(section + '-subnav');
+            if (subNav) {
+                subNav.querySelectorAll('.sub-nav-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+        }
+        
+        // Initialize with first page
+        window.addEventListener('DOMContentLoaded', () => {
+            // Ensure first page is shown
+            const firstNavButton = document.querySelector('.nav-button');
+            if (firstNavButton) {
+                firstNavButton.click();
+            }
+        });
+
+        // Add gleaming effect to filigree on scroll
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const filigreeElements = document.querySelectorAll('.filigree-corner, .filigree-pattern');
+            
+            if (scrollTop > lastScrollTop) {
+                // Scrolling down
+                filigreeElements.forEach(el => {
+                    el.style.animation = 'gleam 1s ease-in-out';
+                });
+            }
+            
+            lastScrollTop = scrollTop;
+        }, false);
+
+        // Book card click handler
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.book-card')) {
+                // Navigate to reading room
+                document.querySelector('[onclick*="reading-room"]').click();
+                setTimeout(() => {
+                    document.querySelector('[onclick*="current"]').click();
+                }, 100);
+            }
+        });
+
+        // File upload simulation
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('upload-button')) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.pdf,.epub,.mobi,.txt';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        alert(`File "${file.name}" selected for upload. Processing will begin shortly.`);
+                    }
+                };
+                input.click();
+            }
+        });
+    </script>
+</body>
+</html>
